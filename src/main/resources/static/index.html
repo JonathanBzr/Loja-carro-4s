@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<center>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Loja de Carros</title>
+</head>
+<body>
+    <h1>Adicionar Carro</h1>
+
+    <form action="http://localhost:8080/carro/adicionar" method="POST">
+        <label>Modelo: <input type="text" name="modelo" required></label><br>
+        <label>Ano: <input type="number" name="ano" required></label><br>
+        <label>Preço: <input type="number" name="preco" step="0.01" required></label><br>
+        <button type="submit">Salvar</button>
+    </form>
+
+    <h1>Buscar carro</h1>
+
+    <form action="http://localhost:8080/carro/buscar" method="GET">
+        <label>Modelo: <input type="text" name="modelo" required></label><br>
+        <button type="submit">Buscar</button>
+    </form>
+
+    <h1>Listar todos os carros</h1>
+
+    <form action="http://localhost:8080/carro/listarCarros" method="GET">
+        <button type="submit">Listar modelos</button>
+    </form>
+
+    <h1>Atualizar Carro por Modelo</h1>
+    <form action="http://localhost:8080/carro/atualizar" method="POST">
+        <label>Modelo: <input type="text" name="modelo" required></label><br>
+        <label>Preço: <input type="number" name="preco" step="0.01" required></label><br>
+        <button type="submit">Atualizar</button>
+    </form>
+
+    <h1>Deletar modelo</h1>
+    <form action="http://localhost:8080/carro/deletar" method="POST">
+        <label>Modelo: <input type="text" name="modelo" required></label><br>
+        <button type="submit">Deletar</button>
+    </form>
+
+</body>
+</center>
+</html>

@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class CarroController {
     }
 
     // Atualizar carro (por ID)
-    @PutMapping("/{id}")
+    @PutMapping("/atualizar{id}")
     public ResponseEntity<Carro> atualizarCarro(@PathVariable Long id, @RequestBody Carro c) {
         c.setId(id);  // Define o ID no objeto
         Carro updatedCarro = carroService.update(c);
@@ -49,6 +50,13 @@ public class CarroController {
     @GetMapping("/{id}")
     public ResponseEntity<Carro> pesquisarCarroPorId(@PathVariable Long id) {
         Optional<Carro> carro = carroService.findById(id);
+        return carro.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    // Buscar carro por modelo via formulário HTML
+    @GetMapping("/buscar")
+    public ResponseEntity<Carro> buscarPorModelo(@RequestParam String modelo) {
+        Optional<Carro> carro = carroService.findByModelo(modelo);
         return carro.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -83,9 +91,31 @@ public class CarroController {
         return ResponseEntity.ok(updatedCarro);
     }
 
-    @PostMapping(value = "/teste", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> bomDia(@RequestBody String nome) {
-        return ResponseEntity.ok("Bom dia, " + nome.trim());
+    // Adicionar carro via formulário HTML
+    @PostMapping(value = "/adicionar", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Void> adicionarCarro(
+            @RequestParam String modelo,
+            @RequestParam int ano,
+            @RequestParam double preco) {
+        Carro novoCarro = new Carro(modelo, ano, preco);
+        carroService.save(novoCarro);
+        return ResponseEntity.status(302).location(URI.create("/index.html")).build();
+    }
+
+    // Deletar carro via formulário HTML
+    @PostMapping(value = "/deletar", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Void> deletarCarroForm(@RequestParam String modelo) {
+        carroService.deleteByModelo(modelo.trim());
+        return ResponseEntity.status(302).location(URI.create("/index.html")).build();
+    }
+
+    // Atualizar carro via formulário HTML
+    @PostMapping(value = "/atualizar", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Void> atualizarCarroForm(
+            @RequestParam String modelo,
+            @RequestParam double preco) {
+        carroService.updateByModelo(modelo.trim(), preco);
+        return ResponseEntity.status(302).location(URI.create("/index.html")).build();
     }
 
     private double parsePreco(String preco) {
